@@ -11,7 +11,7 @@ module.exports = {
     'import/resolver': {
       typescript: {
         alwaysTryTypes: true,
-        project: './',
+        project: './tsconfig.json',
       },
       node: {
         paths: ['src'],
@@ -21,6 +21,7 @@ module.exports = {
           '@components': './src/components',
           '@services': './src/services',
           '@navigation': './src/navigation',
+          '@stores': './src/stores',
           '@assets': './assets',
         },
       },
@@ -55,6 +56,10 @@ module.exports = {
           },
           {
             pattern: '@navigation/**',
+            group: 'internal',
+          },
+          {
+            pattern: '@stores/**',
             group: 'internal',
           },
           {
