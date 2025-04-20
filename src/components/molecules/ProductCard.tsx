@@ -16,11 +16,14 @@ export const ProductCard: React.FC<Props> = ({
     <Image source={{uri: image}} style={cardStyles.image} />
     <View style={cardStyles.info}>
       <Text style={cardStyles.title}>{title}</Text>
-      <Text style={cardStyles.price}>{price.toFixed(0)} ₽</Text>
+      <View style={cardStyles.priceRow}>
+        <Text style={cardStyles.price}>{'Цена:'}</Text>
+        <Text style={cardStyles.priceValue}>{`${price.toFixed(0)} ₽`}</Text>
+      </View>
       <TouchableOpacity
         style={cardStyles.button}
         onPress={() => onAddToCart({id, title, price, image})}>
-        <Text style={cardStyles.buttonText}>В корзину</Text>
+        <Text style={cardStyles.buttonText}>{'В корзину'}</Text>
       </TouchableOpacity>
     </View>
   </View>
@@ -38,7 +41,16 @@ const cardStyles = StyleSheet.create({
   image: {width: 100, height: 100},
   info: {flex: 1, padding: 8},
   title: {fontSize: 16, fontWeight: 'bold'},
-  price: {marginVertical: 4},
+  priceRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  price: {marginVertical: 4, marginRight: 8},
+  priceValue: {
+    color: '#009600',
+    textAlign: 'left',
+    fontSize: 18,
+  },
   button: {
     marginTop: 8,
     backgroundColor: '#007AFF',

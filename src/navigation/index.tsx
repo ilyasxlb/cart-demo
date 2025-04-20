@@ -10,7 +10,7 @@ import {StoreProvider} from '@stores/storeContext';
 export type RootStackParamList = {
   ProductList: undefined;
   Options: undefined;
-  Confirmation: {options: string[]};
+  Confirmation: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
