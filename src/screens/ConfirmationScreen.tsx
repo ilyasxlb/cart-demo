@@ -15,6 +15,7 @@ import {
 import {RootStackParamList} from '@navigation/index';
 import {OPTIONS_LABELS} from '@services/optionsService.ts';
 import {useStores} from '@stores/storeContext';
+import {toastStore} from '@stores/toastStore.ts';
 
 type ConfirmationNavProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -44,6 +45,12 @@ export const ConfirmationScreen: React.FC = observer(() => {
   ];
 
   const handleConfirm = () => {
+    if (!cartStore.canCheckout) {
+      return toastStore.showToast(
+        'error',
+        'Не достигнута минимальная сумма для покупки',
+      );
+    }
     runInAction(() => {
       cartStore.cartItems.clear();
       cartStore.cartOptions.clear();
@@ -69,7 +76,13 @@ export const ConfirmationScreen: React.FC = observer(() => {
       />
 
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.button} onPress={handleConfirm}>
+        <TouchableOpacity
+          style={[
+            styles.button,
+            !cartStore.canCheckout && styles.buttonDisabled,
+          ]}
+          activeOpacity={!cartStore.canCheckout ? 1 : 0.2}
+          onPress={handleConfirm}>
           <Text style={styles.buttonText}>Подтвердить</Text>
         </TouchableOpacity>
       </View>
@@ -89,6 +102,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#007AFF',
     padding: 12,
     borderRadius: 6,
+  },
+  buttonDisabled: {
+    opacity: 1,
+    backgroundColor: '#aaa',
   },
   buttonText: {
     color: '#fff',

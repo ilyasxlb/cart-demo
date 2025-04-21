@@ -15,6 +15,7 @@ import {OptionItem} from '@components/molecules/Option';
 import {RootStackParamList} from '@navigation/index';
 import {OPTIONS_LABELS} from '@services/optionsService.ts';
 import {useStores} from '@stores/storeContext';
+import {toastStore} from '@stores/toastStore.ts';
 
 type NavProp = NativeStackNavigationProp<RootStackParamList, 'Options'>;
 
@@ -30,6 +31,16 @@ export const OptionsScreen: React.FC = observer(() => {
       console.log('Ошибка загрузки списка опций', error);
     });
   }, [loadAvailable]);
+
+  const handleNext = () => {
+    if (!cartStore.canCheckout) {
+      return toastStore.showToast(
+        'error',
+        'Не достигнута минимальная сумма для покупки',
+      );
+    }
+    navigation.navigate('Confirmation');
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -51,8 +62,12 @@ export const OptionsScreen: React.FC = observer(() => {
 
       <View style={styles.footer}>
         <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('Confirmation')}>
+          style={[
+            styles.button,
+            !cartStore.canCheckout && styles.buttonDisabled,
+          ]}
+          activeOpacity={!cartStore.canCheckout ? 1 : 0.2}
+          onPress={handleNext}>
           <Text style={styles.buttonText}>{'Оформить'}</Text>
         </TouchableOpacity>
       </View>
@@ -79,6 +94,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#28A745',
     padding: 12,
     borderRadius: 6,
+  },
+  buttonDisabled: {
+    opacity: 1,
+    backgroundColor: '#aaa',
   },
   buttonText: {color: '#fff', textAlign: 'center'},
 });
