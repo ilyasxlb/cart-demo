@@ -1,10 +1,11 @@
 import {useNavigation} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {runInAction} from 'mobx';
 import {observer} from 'mobx-react-lite';
 import React from 'react';
 import {
-  FlatList,
   SafeAreaView,
+  SectionList,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -20,37 +21,52 @@ type ConfirmationNavProp = NativeStackNavigationProp<
   'Confirmation'
 >;
 
+type Section = {
+  title: string;
+  data: string[];
+};
+
 export const ConfirmationScreen: React.FC = observer(() => {
   const navigation = useNavigation<ConfirmationNavProp>();
-  const {cartStore, optionsStore} = useStores();
+  const {cartStore} = useStores();
+
+  const sections: Section[] = [
+    {
+      title: 'Товары',
+      data: cartStore.cartItems.items.map(
+        item => `${item.title} - ${item.price} ₽`,
+      ),
+    },
+    {
+      title: 'Опции',
+      data: cartStore.cartOptions.selected.map(opt => OPTIONS_LABELS[opt]),
+    },
+  ];
 
   const handleConfirm = () => {
-    cartStore.clear();
-    optionsStore.clear();
-    navigation.popToTop();
+    runInAction(() => {
+      cartStore.cartItems.clear();
+      cartStore.cartOptions.clear();
+      navigation.popToTop();
+    });
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Text style={styles.priceText}>{`Сумма: ${cartStore.totalPrice.toFixed(
-        0,
-      )} ₽`}</Text>
+      <Text
+        style={
+          styles.totalText
+        }>{`Сумма: ${cartStore.cartItems.totalPrice} ₽`}</Text>
 
-      <Text>Товары:</Text>
-
-      <FlatList
-        data={cartStore.items}
-        style={styles.list}
-        keyExtractor={(_, index) => index.toString()}
-        renderItem={({item}) => (
-          <Text>{`• ${item.title} — ${item.price.toFixed(0)} ₽`}</Text>
+      <SectionList
+        sections={sections}
+        keyExtractor={(item, idx) => item + idx}
+        renderSectionHeader={({section}) => (
+          <Text style={styles.heading}>{section.title}:</Text>
         )}
+        renderItem={({item}) => <Text style={styles.itemText}>• {item}</Text>}
+        contentContainerStyle={styles.container}
       />
-
-      <Text style={styles.optionsText}>{'Опции:'}</Text>
-      {optionsStore.selected.map(opt => (
-        <Text key={opt}>{`• ${OPTIONS_LABELS[opt]}`}</Text>
-      ))}
 
       <View style={styles.footer}>
         <TouchableOpacity style={styles.button} onPress={handleConfirm}>
@@ -63,9 +79,10 @@ export const ConfirmationScreen: React.FC = observer(() => {
 
 const styles = StyleSheet.create({
   safeArea: {flex: 1, padding: 16},
-  priceText: {fontSize: 18, marginVertical: 12},
-  list: {flexGrow: 0},
-  optionsText: {marginTop: 12},
+  totalText: {fontSize: 18, marginVertical: 12},
+  itemText: {fontSize: 14},
+  container: {padding: 16, paddingBottom: 200},
+  heading: {fontSize: 18, fontWeight: 'bold', marginVertical: 8},
   button: {
     marginTop: 'auto',
     marginBottom: 42,
@@ -86,5 +103,6 @@ const styles = StyleSheet.create({
     padding: 32,
     borderTopWidth: 1,
     borderColor: '#ddd',
+    backgroundColor: '#fff',
   },
 });

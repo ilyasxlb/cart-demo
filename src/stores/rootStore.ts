@@ -1,14 +1,14 @@
 import {makeAutoObservable} from 'mobx';
 
-import {optionsStore} from '@stores/optionsStore.ts';
+import {cartStore} from '@stores/cartStore';
+import {toastStore} from '@stores/toastStore';
 
-import {cartStore} from './cartStore';
 import {productStore} from './productStore';
 
 export const rootStore = {
   productStore,
   cartStore,
-  optionsStore,
+  toastStore,
 };
 
 makeAutoObservable(rootStore);

@@ -25,9 +25,7 @@ export const ProductListScreen: React.FC = observer(() => {
   const {loadProducts} = productStore;
 
   useEffect(() => {
-    loadProducts().catch(error => {
-      console.log('Ошибка загрузки списка продуктов', error);
-    });
+    loadProducts();
   }, [loadProducts]);
 
   return (
@@ -39,7 +37,10 @@ export const ProductListScreen: React.FC = observer(() => {
           data={productStore.products}
           style={styles.list}
           renderItem={({item}) => (
-            <ProductCard {...item} onAddToCart={() => cartStore.add(item)} />
+            <ProductCard
+              {...item}
+              onAddToCart={() => cartStore.cartItems.add(item)}
+            />
           )}
           keyExtractor={(item: Product) => item.id}
           contentContainerStyle={styles.flatContainer}
@@ -53,7 +54,7 @@ export const ProductListScreen: React.FC = observer(() => {
           <Text
             style={
               styles.cartText
-            }>{`товаров ${cartStore.totalItems} шт.`}</Text>
+            }>{`товаров ${cartStore.cartItems.totalItems} шт.`}</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

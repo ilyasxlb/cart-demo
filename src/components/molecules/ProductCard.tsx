@@ -18,7 +18,7 @@ export const ProductCard: React.FC<Props> = ({
       <Text style={cardStyles.title}>{title}</Text>
       <View style={cardStyles.priceRow}>
         <Text style={cardStyles.price}>{'Цена:'}</Text>
-        <Text style={cardStyles.priceValue}>{`${price.toFixed(0)} ₽`}</Text>
+        <Text style={cardStyles.priceValue}>{`${price} ₽`}</Text>
       </View>
       <TouchableOpacity
         style={cardStyles.button}

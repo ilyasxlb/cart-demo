@@ -19,10 +19,11 @@ import {useStores} from '@stores/storeContext';
 type NavProp = NativeStackNavigationProp<RootStackParamList, 'Options'>;
 
 export const OptionsScreen: React.FC = observer(() => {
-  const {optionsStore} = useStores();
+  const {cartStore} = useStores();
   const navigation = useNavigation<NavProp>();
 
-  const {loadAvailable, available, loading, selected, toggle} = optionsStore;
+  const {loadAvailable, available, loading, selected, toggle} =
+    cartStore.cartOptions;
 
   useEffect(() => {
     loadAvailable().catch(error => {
@@ -70,6 +71,7 @@ const styles = StyleSheet.create({
     padding: 32,
     borderTopWidth: 1,
     borderColor: '#ddd',
+    backgroundColor: '#fff',
   },
   button: {
     marginTop: 'auto',
