@@ -18,16 +18,23 @@ export const optionsStore: OptionsProp = {
 
   loadAvailable: async () => {
     optionsStore.loading = true;
-    try {
-      const fetchedOptions = await fetchOptions();
-      runInAction(() => {
-        optionsStore.available = fetchedOptions;
+    return fetchOptions()
+      .then(fetchedOptions => {
+        runInAction(() => {
+          optionsStore.available = fetchedOptions;
+        });
+      })
+      .catch(error => {
+        runInAction(() => {
+          optionsStore.available = [];
+        });
+        throw error;
+      })
+      .finally(() => {
+        runInAction(() => {
+          optionsStore.loading = false;
+        });
       });
-    } finally {
-      runInAction(() => {
-        optionsStore.loading = false;
-      });
-    }
   },
 
   toggle: opt => {

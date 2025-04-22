@@ -11,10 +11,14 @@ import {
   View,
 } from 'react-native';
 
+import {FullScreenIndicator} from '@components/atoms/Indicator.tsx';
 import {ProductCard} from '@components/molecules/ProductCard';
 import {RootStackParamList} from '@navigation/index';
 import {Product} from '@services/productService';
-import {useStores} from '@stores/storeContext';
+import {analyticsEventsStore} from '@stores/analyticsEventsStore.ts';
+import {toastStore} from '@stores/toastStore.ts';
+
+import {useStores} from '../appStoreContext.tsx';
 
 type NavProp = NativeStackNavigationProp<RootStackParamList, 'ProductList'>;
 
@@ -25,32 +29,37 @@ export const ProductListScreen: React.FC = observer(() => {
   const {loadProducts} = productStore;
 
   useEffect(() => {
-    loadProducts();
+    loadProducts().catch(error => {
+      toastStore.showToast('error', error.message);
+      analyticsEventsStore.send({
+        type: 'products_fetch_error',
+        data: {message: error.message},
+      });
+    });
   }, [loadProducts]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      {productStore.loading ? (
-        <Text style={styles.loadText}>Загрузка...</Text>
-      ) : (
-        <FlatList
-          data={productStore.products}
-          style={styles.list}
-          renderItem={({item}) => (
-            <ProductCard
-              productData={item}
-              onAddToCart={cartStore.cartItems.add}
-            />
-          )}
-          keyExtractor={(item: Product) => item.id}
-          contentContainerStyle={styles.flatContainer}
-        />
+      {productStore.loading && (
+        <FullScreenIndicator caption={'список товаров'} />
       )}
+      <FlatList
+        data={productStore.products}
+        style={styles.list}
+        renderItem={({item}) => (
+          <ProductCard
+            productData={item}
+            onAddToCart={cartStore.cartItems.add}
+          />
+        )}
+        keyExtractor={(item: Product) => item.id}
+        contentContainerStyle={styles.flatContainer}
+      />
       <View style={styles.footer}>
         <Text style={styles.cartTitle}>{'Ваша корзина:'}</Text>
         <TouchableOpacity
           style={styles.cartButton}
-          onPress={() => navigation.navigate('Options')}>
+          onPress={() => navigation.navigate('Cart')}>
           <Text
             style={
               styles.cartText
@@ -63,7 +72,18 @@ export const ProductListScreen: React.FC = observer(() => {
 
 const styles = StyleSheet.create({
   safeArea: {flex: 1, paddingVertical: 16},
-  loadText: {textAlign: 'center', marginTop: 20},
+  loaderOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1,
+    backgroundColor: 'rgba(255,255,255,0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadText: {fontSize: 24, zIndex: 10},
   cartButton: {
     marginTop: 'auto',
     marginBottom: 42,

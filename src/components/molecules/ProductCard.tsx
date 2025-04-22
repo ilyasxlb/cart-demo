@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     marginVertical: 8,
     marginRight: 20,
-    fontWeight: '500'
+    fontWeight: '500',
   },
   priceDetails: {marginLeft: 20, fontSize: 16, color: '#009600'},
   button: {
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   removeButton: {
-    backgroundColor: '#f44336',
+    backgroundColor: 'rgba(188,49,40,0.76)',
     marginTop: 4,
   },
   buttonText: {color: '#fff', textAlign: 'center'},

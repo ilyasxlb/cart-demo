@@ -2,8 +2,9 @@ import {observer} from 'mobx-react-lite';
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
-import {useStores} from '@stores/storeContext';
 import type {Toast} from '@stores/toastStore';
+
+import {useStores} from '../../appStoreContext.tsx';
 
 const ToastItem: React.FC<{toast: Toast}> = ({toast}) => {
   return (

@@ -2,6 +2,10 @@ import {makeAutoObservable} from 'mobx';
 
 import {Product} from '@services/productService';
 
+// штука CartLine которая позволяет группировать одинаковые товары (долго объяснять по коду надеюсь +- понятно)
+// корочи для хранения товаров в корзине, я использую доп свойство qty
+// оно автоматически добавляется в методе add, и инкрементит этот счетчик,
+// если в корзину продолжают добавляться товары с таким же ID
 export type CartLine = Product & {qty: number};
 
 type ItemsProp = {

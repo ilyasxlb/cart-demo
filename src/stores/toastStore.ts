@@ -6,8 +6,14 @@ export type Toast = {
   message: string;
 };
 
-export const toastStore = {
-  queue: [] as Toast[],
+type ToastStore = {
+  queue: Toast[];
+  nextId: number;
+  showToast: (type: Toast['type'], message: string) => void;
+};
+
+export const toastStore: ToastStore = {
+  queue: [],
   nextId: 1,
 
   showToast: (type: Toast['type'], message: string) => {

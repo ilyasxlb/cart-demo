@@ -13,17 +13,20 @@ import {
   View,
 } from 'react-native';
 
+import {FullScreenIndicator} from '@components/atoms/Indicator.tsx';
 import {OptionItem} from '@components/molecules/Option';
 import {ProductCard} from '@components/molecules/ProductCard.tsx';
 import {RootStackParamList} from '@navigation/index';
 import {OPTIONS_LABELS} from '@services/optionsService.ts';
-import {useStores} from '@stores/storeContext';
+import {analyticsEventsStore} from '@stores/analyticsEventsStore.ts';
 import {toastStore} from '@stores/toastStore.ts';
 
-type NavProp = NativeStackNavigationProp<RootStackParamList, 'Options'>;
+import {useStores} from '../appStoreContext.tsx';
+
+type NavProp = NativeStackNavigationProp<RootStackParamList, 'Cart'>;
 const Tab = createMaterialTopTabNavigator();
 
-const ItemsTab = observer(() => {
+const ProductsTab: React.FC = observer(() => {
   const {
     cartStore: {cartItems},
   } = useStores();
@@ -47,18 +50,21 @@ const ItemsTab = observer(() => {
   );
 });
 
-const OptionsTab = observer(() => {
+const OptionsTab: React.FC = observer(() => {
   const {cartStore} = useStores();
-  const {loadAvailable, available, loading, selected, toggle} =
-    cartStore.cartOptions;
+  const {loadAvailable, available, selected, toggle} = cartStore.cartOptions;
 
   useEffect(() => {
-    loadAvailable().catch(err => console.warn(err));
+    loadAvailable().catch(error => {
+      toastStore.showToast('error', error.message);
+      analyticsEventsStore.send({
+        type: 'option_fetch_error',
+        data: {message: error.message},
+      });
+    });
   }, [loadAvailable]);
 
-  return loading ? (
-    <Text style={styles.loading}>{'Загрузка опций...'}</Text>
-  ) : (
+  return (
     <FlatList
       data={available}
       keyExtractor={opt => opt}
@@ -74,7 +80,7 @@ const OptionsTab = observer(() => {
   );
 });
 
-export const OptionsScreen: React.FC = observer(() => {
+export const CartScreen: React.FC = observer(() => {
   const {cartStore} = useStores();
   const navigation = useNavigation<NavProp>();
 
@@ -85,11 +91,14 @@ export const OptionsScreen: React.FC = observer(() => {
         'Не достигнута минимальная сумма для покупки',
       );
     }
-    navigation.navigate('Confirmation');
+    navigation.navigate('OrderConfirmation');
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      {cartStore.cartOptions.loading && (
+        <FullScreenIndicator caption={'доступные опции'} />
+      )}
       <Tab.Navigator
         screenOptions={{
           tabBarIndicatorStyle: {backgroundColor: '#28A745'},
@@ -98,7 +107,7 @@ export const OptionsScreen: React.FC = observer(() => {
         }}>
         <Tab.Screen
           name={'ItemsTabScreen'}
-          component={ItemsTab}
+          component={ProductsTab}
           options={{title: 'Товары'}}
         />
         <Tab.Screen

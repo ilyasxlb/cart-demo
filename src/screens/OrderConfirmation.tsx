@@ -1,6 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {runInAction} from 'mobx';
 import {observer} from 'mobx-react-lite';
 import React from 'react';
 import {
@@ -12,15 +11,16 @@ import {
   View,
 } from 'react-native';
 
+import {FullScreenIndicator} from '@components/atoms/Indicator.tsx';
 import {RootStackParamList} from '@navigation/index';
 import {OPTIONS_LABELS} from '@services/optionsService.ts';
-import {submitOrder} from '@services/orderService.ts';
-import {useStores} from '@stores/storeContext';
 import {toastStore} from '@stores/toastStore.ts';
+
+import {useStores} from '../appStoreContext.tsx';
 
 type ConfirmationNavProp = NativeStackNavigationProp<
   RootStackParamList,
-  'Confirmation'
+  'OrderConfirmation'
 >;
 
 type Section = {
@@ -28,7 +28,7 @@ type Section = {
   data: string[];
 };
 
-export const ConfirmationScreen: React.FC = observer(() => {
+export const OrderConfirmation: React.FC = observer(() => {
   const navigation = useNavigation<ConfirmationNavProp>();
   const {cartStore} = useStores();
 
@@ -53,16 +53,10 @@ export const ConfirmationScreen: React.FC = observer(() => {
       );
     }
 
-    submitOrder({
-      items: cartStore.cartItems.items,
-      options: cartStore.cartOptions.selected,
-    })
+    cartStore
+      .submitOrder()
       .then(() => {
-        toastStore.showToast('success', 'Заказ успешно отправлен');
-        runInAction(() => {
-          cartStore.cartItems.clear();
-          cartStore.cartOptions.clear();
-        });
+        toastStore.showToast('success', 'Заказ успешно отправлен.');
         navigation.popToTop();
       })
       .catch(err => {
@@ -72,6 +66,9 @@ export const ConfirmationScreen: React.FC = observer(() => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      {cartStore.isSubmitting && (
+        <FullScreenIndicator caption={'регистрация заказа'} />
+      )}
       <Text style={styles.totalText}>
         {'итого: '}
         <Text
@@ -111,7 +108,12 @@ export const ConfirmationScreen: React.FC = observer(() => {
           ]}
           activeOpacity={!cartStore.canCheckout ? 1 : 0.2}
           onPress={handleConfirm}>
-          <Text style={styles.buttonText}>Подтвердить</Text>
+          <Text style={styles.buttonText}>{'Подтвердить'}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.cancel]}
+          onPress={() => navigation.pop()}>
+          <Text style={styles.buttonText}>{'Отмена'}</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -136,10 +138,16 @@ const styles = StyleSheet.create({
   heading: {fontSize: 18, fontWeight: 'bold', marginTop: 12},
   button: {
     marginTop: 'auto',
-    marginBottom: 42,
+    marginBottom: 22,
     backgroundColor: '#007AFF',
     padding: 12,
     borderRadius: 6,
+  },
+  cancel: {
+    backgroundColor: 'rgba(188,49,40,0.76)',
+    padding: 12,
+    borderRadius: 6,
+    marginBottom: 42,
   },
   buttonDisabled: {
     opacity: 1,
