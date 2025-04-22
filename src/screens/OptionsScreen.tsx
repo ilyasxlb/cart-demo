@@ -1,9 +1,11 @@
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {useNavigation} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {observer} from 'mobx-react-lite';
 import React, {useEffect} from 'react';
 import {
   FlatList,
+  Platform,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -18,19 +20,55 @@ import {useStores} from '@stores/storeContext';
 import {toastStore} from '@stores/toastStore.ts';
 
 type NavProp = NativeStackNavigationProp<RootStackParamList, 'Options'>;
+const Tab = createMaterialTopTabNavigator();
 
-export const OptionsScreen: React.FC = observer(() => {
+const ItemsTab = observer(() => {
   const {cartStore} = useStores();
-  const navigation = useNavigation<NavProp>();
 
+  return (
+    <FlatList
+      data={cartStore.cartItems.items}
+      keyExtractor={(item, i) => item.id + i}
+      contentContainerStyle={styles.tabList}
+      renderItem={({item}) => (
+        <Text style={styles.listItem}>
+          • {item.title} — {item.price.toFixed(0)} ₽
+        </Text>
+      )}
+    />
+  );
+});
+
+const OptionsTab = observer(() => {
+  const {cartStore} = useStores();
   const {loadAvailable, available, loading, selected, toggle} =
     cartStore.cartOptions;
 
   useEffect(() => {
-    loadAvailable().catch(error => {
-      console.log('Ошибка загрузки списка опций', error);
-    });
+    loadAvailable().catch(err => console.warn(err));
   }, [loadAvailable]);
+
+  return loading ? (
+    <Text style={styles.loading}>{'Загрузка опций...'}</Text>
+  ) : (
+    <FlatList
+      data={available}
+      keyExtractor={opt => opt}
+      contentContainerStyle={styles.tabList}
+      renderItem={({item}) => (
+        <OptionItem
+          label={OPTIONS_LABELS[item]}
+          selected={selected.includes(item)}
+          onToggle={() => toggle(item)}
+        />
+      )}
+    />
+  );
+});
+
+export const OptionsScreen: React.FC = observer(() => {
+  const {cartStore} = useStores();
+  const navigation = useNavigation<NavProp>();
 
   const handleNext = () => {
     if (!cartStore.canCheckout) {
@@ -44,21 +82,23 @@ export const OptionsScreen: React.FC = observer(() => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      {loading ? (
-        <Text style={styles.loading}>{'Загрузка опций...'}</Text>
-      ) : (
-        <FlatList
-          data={available}
-          keyExtractor={opt => opt}
-          renderItem={({item}) => (
-            <OptionItem
-              label={OPTIONS_LABELS[item]}
-              selected={selected.includes(item)}
-              onToggle={() => toggle(item)}
-            />
-          )}
+      <Tab.Navigator
+        screenOptions={{
+          tabBarIndicatorStyle: {backgroundColor: '#28A745'},
+          tabBarLabelStyle: {fontWeight: 'bold'},
+          tabBarStyle: Platform.OS === 'android' ? {elevation: 0} : undefined,
+        }}>
+        <Tab.Screen
+          name={'ItemsTabScreen'}
+          component={ItemsTab}
+          options={{title: 'Товары'}}
         />
-      )}
+        <Tab.Screen
+          name={'OptionsTabScreen'}
+          component={OptionsTab}
+          options={{title: 'Опции'}}
+        />
+      </Tab.Navigator>
 
       <View style={styles.footer}>
         <TouchableOpacity
@@ -100,4 +140,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#aaa',
   },
   buttonText: {color: '#fff', textAlign: 'center'},
+  tabList: {padding: 16},
+  listItem: {marginBottom: 8, fontSize: 16},
 });
