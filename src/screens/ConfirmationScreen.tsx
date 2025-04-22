@@ -1,5 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {runInAction} from 'mobx';
 import {observer} from 'mobx-react-lite';
 import React from 'react';
 import {
@@ -33,13 +34,13 @@ export const ConfirmationScreen: React.FC = observer(() => {
 
   const sections: Section[] = [
     {
-      title: 'Товары',
+      title: 'товары:',
       data: cartStore.cartItems.items.map(
-        item => `${item.title} - ${item.price} ₽`,
+        item => `${item.qty} x ${item.title} = ${item.qty * item.price} ₽`,
       ),
     },
     {
-      title: 'Опции',
+      title: 'опции:',
       data: cartStore.cartOptions.selected.map(opt => OPTIONS_LABELS[opt]),
     },
   ];
@@ -58,8 +59,10 @@ export const ConfirmationScreen: React.FC = observer(() => {
     })
       .then(() => {
         toastStore.showToast('success', 'Заказ успешно отправлен');
-        cartStore.cartItems.clear();
-        cartStore.cartOptions.clear();
+        runInAction(() => {
+          cartStore.cartItems.clear();
+          cartStore.cartOptions.clear();
+        });
         navigation.popToTop();
       })
       .catch(err => {
@@ -69,18 +72,34 @@ export const ConfirmationScreen: React.FC = observer(() => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Text
-        style={
-          styles.totalText
-        }>{`Сумма: ${cartStore.cartItems.totalPrice} ₽`}</Text>
+      <Text style={styles.totalText}>
+        {'итого: '}
+        <Text
+          style={
+            styles.totalPrice
+          }>{`${cartStore.cartItems.totalPrice} ₽`}</Text>
+      </Text>
+      <View style={styles.divider} />
 
       <SectionList
         sections={sections}
         keyExtractor={(item, idx) => item + idx}
         renderSectionHeader={({section}) => (
-          <Text style={styles.heading}>{section.title}:</Text>
+          <Text style={styles.heading}>{section.title}</Text>
         )}
-        renderItem={({item}) => <Text style={styles.itemText}>• {item}</Text>}
+        renderItem={({item}) => {
+          const match = item.match(/(.*?) = (\d+ ₽)/);
+          if (!match) return <Text style={styles.itemText}>{item}</Text>;
+
+          const [, left, right] = match;
+
+          return (
+            <Text style={styles.itemText}>
+              <Text style={styles.itemLabel}>{left} = </Text>
+              <Text style={styles.itemPrice}>{right}</Text>
+            </Text>
+          );
+        }}
         contentContainerStyle={styles.container}
       />
 
@@ -101,10 +120,20 @@ export const ConfirmationScreen: React.FC = observer(() => {
 
 const styles = StyleSheet.create({
   safeArea: {flex: 1, paddingVertical: 16},
-  totalText: {fontSize: 18, marginVertical: 12},
-  itemText: {fontSize: 14},
-  container: {padding: 16, paddingBottom: 200},
-  heading: {fontSize: 18, fontWeight: 'bold', marginVertical: 8},
+  totalText: {
+    paddingHorizontal: 16,
+    textAlign: 'left',
+    fontWeight: '600',
+    fontSize: 18,
+    marginVertical: 12,
+  },
+  totalPrice: {fontSize: 18, color: '#009600', marginVertical: 12},
+  divider: {height: 2, marginVertical: 0, backgroundColor: '#ddd'},
+  itemText: {paddingLeft: 6, fontSize: 14},
+  itemLabel: {color: '#666'},
+  itemPrice: {fontSize: 16, fontWeight: 'bold'},
+  container: {padding: 16, paddingTop: 0, paddingBottom: 200},
+  heading: {fontSize: 18, fontWeight: 'bold', marginTop: 12},
   button: {
     marginTop: 'auto',
     marginBottom: 42,
