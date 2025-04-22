@@ -16,11 +16,14 @@ type Props = {
 
 export const ProductCard: React.FC<Props> = observer(
   ({productData, onAddToCart, onRemoveFromCart, onIncrement, onDecrement}) => {
-    const {title, price, image, qty} = productData;
+    const {title, price, qty} = productData;
 
     return (
       <View style={styles.container}>
-        <Image source={{uri: image}} style={styles.image} />
+        <Image
+          source={require('@assets/placeholder.png')}
+          style={styles.image}
+        />
         <View style={styles.info}>
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.price}>
@@ -76,7 +79,12 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     elevation: 2,
   },
-  image: {width: 100, height: 100},
+  image: {
+    margin: 'auto',
+    resizeMode: 'contain',
+    width: 120,
+    height: 40,
+  },
   info: {flex: 1, padding: 8},
   title: {fontSize: 16, fontWeight: 'bold'},
   price: {

@@ -13,8 +13,8 @@ export type AnalyticsPayload<T = unknown> = {
 };
 
 export const analyticsService = {
-  sendEvent: <T>(payload: AnalyticsPayload<T>): Promise<void> => {
-    // console.log('Отправка аналитики:', payload);
+  sendEvent: <T>(_payload: AnalyticsPayload<T>): Promise<void> => {
+    // console.log('Отправка аналитики:', _payload);
 
     return new Promise((resolve, reject) => {
       const random = Math.random();
@@ -23,7 +23,7 @@ export const analyticsService = {
         if (random < ANALYTICS_SERVICE_UNAVAILABLE) {
           reject(new Error('Сервис недоступен'));
         } else {
-          console.log('Аналитика успешно отправлена', payload);
+          // console.log('Аналитика успешно отправлена', payload);
           resolve();
         }
       }, REQUEST_DELAY);

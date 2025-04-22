@@ -4,7 +4,9 @@ export type OptionKey =
   | 'at_the_door'
   | 'need_call'
   | 'intercom_available'
-  | 'angry_concierge';
+  | 'angry_concierge'
+  | 'take_to_yourself'
+  | 'deliver_to_another';
 
 export type OptionState = {
   [key in OptionKey]: boolean;
@@ -21,6 +23,8 @@ export const fetchOptions = async (): Promise<OptionKey[]> => {
         'need_call',
         'intercom_available',
         'angry_concierge',
+        'take_to_yourself',
+        'deliver_to_another',
       ]);
     }, REQUEST_DELAY);
   });
@@ -31,4 +35,6 @@ export const OPTIONS_LABELS: Record<OptionKey, string> = {
   need_call: 'Позвонить',
   intercom_available: 'Домофон есть',
   angry_concierge: 'Злой консьерж',
+  take_to_yourself: 'Оставить у себя',
+  deliver_to_another: 'Доставить по другому адресу',
 };

@@ -19,7 +19,7 @@ type OrderPayload = {
 
 export const submitOrderRequest = ({
   items,
-  options,
+  options: _options,
 }: OrderPayload): Promise<void> => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -33,7 +33,7 @@ export const submitOrderRequest = ({
       if (orderSum < MIN_ORDER_SUM_RUB)
         return reject(new Error('Не достигнута минимальная сумма заказа'));
 
-      console.log('Заказ отправлен:', {items, options});
+      // console.log('Заказ отправлен:', {items, _options});
       resolve();
     }, REQUEST_DELAY);
   });

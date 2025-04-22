@@ -1,5 +1,7 @@
 import {makeAutoObservable, runInAction} from 'mobx';
 
+import {TOAST_DELAY} from '../constants.ts';
+
 export type Toast = {
   id: number;
   type: 'success' | 'error';
@@ -23,7 +25,7 @@ export const toastStore: ToastStore = {
       runInAction(() => {
         toastStore.queue = toastStore.queue.filter(t => t.id !== toast.id);
       });
-    }, 3000);
+    }, TOAST_DELAY);
   },
 };
 

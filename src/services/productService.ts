@@ -1,4 +1,10 @@
-import {PRODUCTS_SERVICE_UNAVAILABLE, REQUEST_DELAY} from '../constants.ts';
+import {
+  MAX_PRICE,
+  MIN_PRICE,
+  PRODUCTS_CATALOG_LENGTH,
+  PRODUCTS_SERVICE_UNAVAILABLE,
+  REQUEST_DELAY,
+} from '../constants.ts';
 
 export type Product = {
   id: string;
@@ -8,7 +14,7 @@ export type Product = {
 };
 
 export const fetchProducts = async (
-  count: number = 1000,
+  count: number = PRODUCTS_CATALOG_LENGTH,
 ): Promise<Product[]> => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -19,7 +25,7 @@ export const fetchProducts = async (
       const products: Product[] = Array.from({length: count}, (_, i) => ({
         id: (i + 1).toString(),
         title: `Товар_${String(i + 1).padStart(4, '0')}`,
-        price: Math.round(300 + Math.random() * 3033), // 300 - 3333 ₽
+        price: Math.round(MIN_PRICE + Math.random() * MAX_PRICE),
         image: 'https://via.placeholder.com/150',
       }));
 

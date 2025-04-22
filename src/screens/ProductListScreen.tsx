@@ -93,8 +93,14 @@ const styles = StyleSheet.create({
     elevation: 5,
     alignItems: 'center',
   },
-  list: {flexGrow: 0, paddingHorizontal: 8},
-  flatContainer: {padding: 8},
+  list: {
+    flexGrow: 0,
+    paddingHorizontal: 8,
+  },
+  flatContainer: {
+    padding: 8,
+    paddingBottom: 142,
+  },
   cartTitle: {
     position: 'absolute',
     top: 8,

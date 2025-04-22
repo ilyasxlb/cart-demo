@@ -159,6 +159,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#aaa',
   },
   buttonText: {color: '#fff', textAlign: 'center'},
-  tabList: {padding: 16},
+  tabList: {padding: 16, paddingBottom: 142},
   listItem: {marginBottom: 8, fontSize: 16},
 });

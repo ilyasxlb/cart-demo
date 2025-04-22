@@ -45,9 +45,9 @@ reaction(
 
     if (payload.type !== 'cart_updated') return;
 
-    if (status === 'success') {
-      toastStore.showToast('success', 'Отправка аналитики завершена');
-    }
+    // if (status === 'success') {
+    //   toastStore.showToast('success', 'Отправка аналитики завершена');
+    // }
 
     if (status === 'error') {
       toastStore.showToast('error', `Ошибка отправки аналитики: ${error}`);
