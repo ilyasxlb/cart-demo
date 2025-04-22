@@ -1,97 +1,111 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# CartTest — мини-приложение для оформления заказов
 
-# Getting Started
+## 📦 Описание
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+CartTest — это React Native приложение, разработанное в рамках тестового задания. Оно демонстрирует покупку товаров с
+возможностью выбора дополнительных опций, подтверждением заказа и отправкой аналитики. Проект реализован без
+использования Expo, с применением TypeScript и MobX для управления состоянием.
 
-## Step 1: Start Metro
+## 🧩 Функциональность
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+- Просмотр большого списка товаров (1000 позиций)
+- Добавление/удаление товаров в корзину, изменение количества
+- Выбор опций доставки (например, "оставить у двери", "позвонить")
+- Проверка минимальной суммы заказа (1000 ₽)
+- Подтверждение заказа с отображением:
+    - Списка товаров (имитация api сервиса)
+    - Выбранных опций (доступные опции также подгружаются с mock api сервиса)
+    - Общей суммы
+- Отправка аналитики на каждое изменение корзины/опций (при неудачной отправке, отображается Toast на 3 секунды)
+- Имитация случайных ошибок от сервиса:
+    - сервис недоступен
+    - недостаточно товаров
+    - не достигнута минимальная сумма
+- UI-индикация загрузки, ошибок и статусов
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+## 🧠 Архитектура и структура
 
-```sh
-# Using npm
-npm start
-
-# OR using Yarn
-yarn start
+```
+src/
+├── App.tsx                 # Root компонент
+├── appStoreContext.tsx     # Провайдер MobX стора
+├── assets/                 # Локальные ресурсы (заглушки)
+├── components/             # Atomic UI (примерно)
+├── constants.ts            # Константы проекта
+├── navigation/             # React Navigation (Stack)
+├── reactions.ts            # MobX-реакции на события
+├── screens/                # Экраны: товары, корзина, подтверждение
+├── services/               # Имитация API: продукты, опции, аналитика, заказы
+└── stores/                 # MobX-сторы: товары, корзина, аналитика, тосты
 ```
 
-## Step 2: Build and run your app
+## 📊 Аналитика
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+Каждое событие изменения корзины фиксируется в `analyticsEventsStore`. Событие содержит:
 
-### Android
+- Полный payload (товары + опции)
+- Статус: `pending`, `success`, `error`
+- Текст ошибки, если есть
 
-```sh
-# Using npm
-npm run android
+Хранится до 300 последних событий (`MAX_EVENTS`) — более старые удаляются из массива.
 
-# OR using Yarn
-yarn android
+## ⚠️ Обработка ошибок
+
+Помимо перечисленных ошибок в ТЗ, с небольшой вероятностью ошибки
+генерируют сервис списка товаров `(API списка товаров не доступен)` и сервис списка опций
+`(API списка опций не доступен)`
+
+- Ошибки от "сервера" записываются в хранилище событий и отображаются через `ToastBar` — верхний тост-индикатор:
+- Во время ожидания ответа сервера отображается индикаторы загрузки (`FullScreenIndicator`)
+
+## 📐 Используемые технологии
+
+- **React Native** (BareFlow)
+- **TypeScript** для типизации моделей и API
+- **MobX** для управления состоянием
+- **React Navigation** (Stack)
+- **Custom UI** без UI-библиотек
+- **Jest** (готово под тесты)
+
+# ⚠ Важно: проблема совместимости с react-native-pager-view
+
+В текущей версии react-native (0.79.1) используется библиотека react-native-pager-view версии 6.7.0, в которой
+зафиксирована проблема совместимости. Без применения патча проект не соберётся.
+
+Для автоматического устранения этой проблемы в проекте предусмотрен скрипт postinstall, который должен запускаться
+автоматически после установки зависимостей (npm install).
+
+Если по каким-либо причинам postinstall не отработал:
+
+Запустите его вручную:
+
+`npm run postinstall`
+
+Или примените исправления вручную, как описано в начале самого скрипта (см. комментарий со ссылкой на issue).
+
+Патч временный и может быть удалён после выхода официального исправления в одной из будущих версий
+react-native-pager-view.
+
+## ▶️ Запуск
+
+1. Установите зависимости:
+
+```bash
+npm install
 ```
 
-### iOS
+2. Запустите сборку:
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
+```bash
+npx react-native run-ios
+# или
+npx react-native run-android
 ```
 
-Then, and every time you update your native dependencies, run:
+> Убедитесь, что настроена среда React Native CLI.
 
-```sh
-bundle exec pod install
-```
+## ✏️ Wireframe (макет)
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+Макет приложения доступен в папке `excallidraw/`:
 
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+- `wireframes.png`
