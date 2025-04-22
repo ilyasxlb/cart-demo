@@ -116,7 +116,9 @@ export const OptionsScreen: React.FC = observer(() => {
           ]}
           activeOpacity={!cartStore.canCheckout ? 1 : 0.2}
           onPress={handleNext}>
-          <Text style={styles.buttonText}>{'Оформить'}</Text>
+          <Text style={styles.buttonText}>
+            {`Оформить заказ ${cartStore.cartItems.totalPrice} ₽, за ${cartStore.cartItems.totalItems} товаров`}
+          </Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
