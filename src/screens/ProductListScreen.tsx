@@ -38,8 +38,8 @@ export const ProductListScreen: React.FC = observer(() => {
           style={styles.list}
           renderItem={({item}) => (
             <ProductCard
-              {...item}
-              onAddToCart={() => cartStore.cartItems.add(item)}
+              productData={item}
+              onAddToCart={cartStore.cartItems.add}
             />
           )}
           keyExtractor={(item: Product) => item.id}
@@ -62,7 +62,7 @@ export const ProductListScreen: React.FC = observer(() => {
 });
 
 const styles = StyleSheet.create({
-  safeArea: {flex: 1},
+  safeArea: {flex: 1, paddingVertical: 16},
   loadText: {textAlign: 'center', marginTop: 20},
   cartButton: {
     marginTop: 'auto',
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     alignItems: 'center',
   },
-  list: {flexGrow: 0},
+  list: {flexGrow: 0, paddingHorizontal: 8},
   flatContainer: {padding: 8},
   cartTitle: {
     position: 'absolute',

@@ -91,7 +91,7 @@ export const ConfirmationScreen: React.FC = observer(() => {
 });
 
 const styles = StyleSheet.create({
-  safeArea: {flex: 1, padding: 16},
+  safeArea: {flex: 1, paddingVertical: 16},
   totalText: {fontSize: 18, marginVertical: 12},
   itemText: {fontSize: 14},
   container: {padding: 16, paddingBottom: 200},

@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 
 import {OptionItem} from '@components/molecules/Option';
+import {ProductCard} from '@components/molecules/ProductCard.tsx';
 import {RootStackParamList} from '@navigation/index';
 import {OPTIONS_LABELS} from '@services/optionsService.ts';
 import {useStores} from '@stores/storeContext';
@@ -23,18 +24,29 @@ type NavProp = NativeStackNavigationProp<RootStackParamList, 'Options'>;
 const Tab = createMaterialTopTabNavigator();
 
 const ItemsTab = observer(() => {
-  const {cartStore} = useStores();
+  const {
+    cartStore: {cartItems},
+  } = useStores();
 
   return (
     <FlatList
-      data={cartStore.cartItems.items}
+      data={cartItems.items}
       keyExtractor={(item, i) => item.id + i}
       contentContainerStyle={styles.tabList}
-      renderItem={({item}) => (
-        <Text style={styles.listItem}>
-          • {item.title} — {item.price.toFixed(0)} ₽
-        </Text>
-      )}
+      renderItem={({item}) => {
+        console.log('item card', item);
+        console.log('itemStore', cartItems.items);
+        return (
+          <ProductCard
+            productData={item}
+            onRemoveFromCart={cartItems.removeLine}
+            // qty={cartItems.getQtyByProduct(item)}
+            // qty={item.qty}
+            onIncrement={cartItems.add}
+            onDecrement={cartItems.remove}
+          />
+        );
+      }}
     />
   );
 });
@@ -116,7 +128,7 @@ export const OptionsScreen: React.FC = observer(() => {
 });
 
 const styles = StyleSheet.create({
-  safeArea: {flex: 1, padding: 16},
+  safeArea: {flex: 1, paddingVertical: 16},
   loading: {textAlign: 'center', marginTop: 20},
   footer: {
     position: 'absolute',
