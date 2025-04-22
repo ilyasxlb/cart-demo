@@ -23,7 +23,17 @@ export const ProductCard: React.FC<Props> = observer(
         <Image source={{uri: image}} style={styles.image} />
         <View style={styles.info}>
           <Text style={styles.title}>{title}</Text>
-          <Text style={styles.price}>{`Цена: ${price.toFixed(0)} ₽`}</Text>
+          <Text style={styles.price}>
+            {`Цена: ${price} ₽`}
+            {qty && (
+              <>
+                <Text style={styles.price}>{`   x ${qty} =  `}</Text>
+                <Text style={styles.priceDetails}>
+                  {`${(price * qty).toLocaleString()} ₽`}
+                </Text>
+              </>
+            )}
+          </Text>
 
           {/* Контрол инкремента и декремента позиции */}
           {qty && onIncrement && onDecrement && (
@@ -69,7 +79,15 @@ const styles = StyleSheet.create({
   image: {width: 100, height: 100},
   info: {flex: 1, padding: 8},
   title: {fontSize: 16, fontWeight: 'bold'},
-  price: {marginVertical: 4, color: '#009600'},
+  price: {
+    color: '#777',
+    fontSize: 14,
+    lineHeight: 20,
+    marginVertical: 8,
+    marginRight: 20,
+    fontWeight: '500'
+  },
+  priceDetails: {marginLeft: 20, fontSize: 16, color: '#009600'},
   button: {
     marginTop: 8,
     backgroundColor: '#007AFF',
