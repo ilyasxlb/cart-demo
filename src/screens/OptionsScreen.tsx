@@ -34,14 +34,10 @@ const ItemsTab = observer(() => {
       keyExtractor={(item, i) => item.id + i}
       contentContainerStyle={styles.tabList}
       renderItem={({item}) => {
-        console.log('item card', item);
-        console.log('itemStore', cartItems.items);
         return (
           <ProductCard
             productData={item}
             onRemoveFromCart={cartItems.removeLine}
-            // qty={cartItems.getQtyByProduct(item)}
-            // qty={item.qty}
             onIncrement={cartItems.add}
             onDecrement={cartItems.remove}
           />

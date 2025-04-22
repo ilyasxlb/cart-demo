@@ -1,40 +1,62 @@
 import {makeAutoObservable, runInAction} from 'mobx';
 
-import {AnalyticsPayload, analyticsService} from '@services/analyticsService';
+import {analyticsService} from '@services/analyticsService';
 
-type AnalyticsError = string;
-type AnalyticsStatus = 'success' | 'error' | 'pending';
+export type AnalyticsEventType =
+  | 'cart_update'
+  | 'order_submit'
+  | 'order_success'
+  | 'order_failure'
+  | string;
 
-type AnalyticsStoreProp = {
-  status: AnalyticsStatus | null;
-  error: AnalyticsError | null;
-  lastPayload: AnalyticsPayload | null;
-  send: (payload: AnalyticsPayload) => void;
+export type AnalyticsPayload<T = unknown> = {
+  type: AnalyticsEventType;
+  data: T;
 };
-export const analyticsEventsStore: AnalyticsStoreProp = {
-  status: null,
-  error: null,
-  lastPayload: null,
 
-  send: (payload: AnalyticsPayload) => {
-    analyticsEventsStore.status = 'pending';
-    analyticsEventsStore.lastPayload = payload;
-    analyticsEventsStore.error = null;
+type AnalyticsEventRecord<T = unknown> = {
+  payload: AnalyticsPayload<T>;
+  status: 'pending' | 'success' | 'error' | null;
+  error: string | null;
+};
+
+export const analyticsEventsStore = {
+  events: [] as AnalyticsEventRecord[],
+
+  send: <T>(payload: AnalyticsPayload<T>) => {
+    const event: AnalyticsEventRecord<T> = {
+      payload,
+      status: 'pending',
+      error: null,
+    };
+
+    analyticsEventsStore.events.push(event);
 
     analyticsService
       .sendEvent(payload)
       .then(() =>
         runInAction(() => {
-          analyticsEventsStore.status = 'success';
+          analyticsEventsStore.events.push({...event, status: 'success'});
         }),
       )
       .catch(error =>
         runInAction(() => {
-          analyticsEventsStore.status = 'error';
-          analyticsEventsStore.error =
+          const errorMessage =
             error instanceof Error ? error.message : String(error);
+          analyticsEventsStore.events.push({
+            ...event,
+            status: 'error',
+            error: errorMessage,
+          });
         }),
       );
+  },
+
+  get lastEvent() {
+    return (
+      analyticsEventsStore.events[analyticsEventsStore.events.length - 1] ??
+      null
+    );
   },
 };
 

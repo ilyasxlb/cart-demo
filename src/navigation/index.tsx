@@ -5,7 +5,6 @@ import React from 'react';
 import {ConfirmationScreen} from '@screens/ConfirmationScreen';
 import {OptionsScreen} from '@screens/OptionsScreen';
 import {ProductListScreen} from '@screens/ProductListScreen';
-import '@stores/analyticsReaction';
 
 export type RootStackParamList = {
   ProductList: undefined;

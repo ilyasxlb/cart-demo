@@ -1,6 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {runInAction} from 'mobx';
 import {observer} from 'mobx-react-lite';
 import React from 'react';
 import {
@@ -14,6 +13,7 @@ import {
 
 import {RootStackParamList} from '@navigation/index';
 import {OPTIONS_LABELS} from '@services/optionsService.ts';
+import {submitOrder} from '@services/orderService.ts';
 import {useStores} from '@stores/storeContext';
 import {toastStore} from '@stores/toastStore.ts';
 
@@ -51,11 +51,20 @@ export const ConfirmationScreen: React.FC = observer(() => {
         'Не достигнута минимальная сумма для покупки',
       );
     }
-    runInAction(() => {
-      cartStore.cartItems.clear();
-      cartStore.cartOptions.clear();
-      navigation.popToTop();
-    });
+
+    submitOrder({
+      items: cartStore.cartItems.items,
+      options: cartStore.cartOptions.selected,
+    })
+      .then(() => {
+        toastStore.showToast('success', 'Заказ успешно отправлен');
+        cartStore.cartItems.clear();
+        cartStore.cartOptions.clear();
+        navigation.popToTop();
+      })
+      .catch(err => {
+        toastStore.showToast('error', err.message);
+      });
   };
 
   return (

@@ -1,4 +1,3 @@
-// src/stores/cartStore/itemsStore.ts
 import {makeAutoObservable} from 'mobx';
 
 import {Product} from '@services/productService';
