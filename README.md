@@ -1,3 +1,16 @@
+<details>
+  <summary>Превью экрана (нажмите, чтобы раскрыть)</summary>
+
+  <p align="center">
+    <img src="./docs/screenshots/Screenshot_1745367895.png" height="400" style="margin-right:10px;" />
+    <img src="./docs/screenshots/Screenshot_1745367901.png" height="400" style="margin-right:10px;" />
+    <img src="./docs/screenshots/Screenshot_1745367909.png" height="400" style="margin-right:10px;" />
+    <img src="./docs/screenshots/Screenshot_1745367920.png" height="400" style="margin-right:10px;" />
+    <img src="./docs/screenshots/Screenshot_1745367925.png" height="400" />
+  </p>
+
+</details>
+
 # CartTest — мини-приложение для оформления заказов
 
 ## 📦 Описание
@@ -108,4 +121,4 @@ npx react-native run-android
 
 Макет приложения доступен в папке `excallidraw/`:
 
-- `wireframes.png`
+![макет](./excallidraw/wireframes.png)
