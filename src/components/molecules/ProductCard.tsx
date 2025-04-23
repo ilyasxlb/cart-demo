@@ -82,8 +82,8 @@ const styles = StyleSheet.create({
   image: {
     margin: 'auto',
     resizeMode: 'contain',
-    width: 120,
-    height: 40,
+    width: 100,
+    height: 50,
   },
   info: {flex: 1, padding: 8},
   title: {fontSize: 16, fontWeight: 'bold'},
