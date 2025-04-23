@@ -8,7 +8,7 @@ export const MAX_EVENTS = 300;
 
 // настройка вероятности ошибок от 0 до 1
 export const ANALYTICS_SERVICE_UNAVAILABLE = 0.2; // Сервис недоступен
-export const PRODUCTS_SERVICE_UNAVAILABLE = 0.05; // API списка товаров не доступен
+export const PRODUCTS_SERVICE_UNAVAILABLE = 0; // API списка товаров не доступен
 export const ORDER_SERVICE_UNAVAILABLE = 0.2; // Сервис недоступен
 export const ORDER_NOT_ENOUGH_GOODS = 0.2; // Недостаточное количество товара на складе
-export const OPTIONS_SERVICE_UNAVAILABLE = 0.05; // API списка опций не доступен
+export const OPTIONS_SERVICE_UNAVAILABLE = 0; // API списка опций не доступен
