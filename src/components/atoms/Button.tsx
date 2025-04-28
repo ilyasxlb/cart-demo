@@ -26,8 +26,8 @@ export const PrimaryButton: React.FC<Props> = ({
     <TouchableOpacity
       style={[
         styles.container,
-        disabled && styles.buttonDisabled,
         styles[color],
+        disabled && styles.buttonDisabled,
       ]}
       activeOpacity={disabled ? 1 : 0.2}
       onPress={onPress}
@@ -46,7 +46,10 @@ const styles = StyleSheet.create({
     elevation: 5,
     alignItems: 'center',
   },
-  buttonDisabled: {opacity: 1, backgroundColor: '#aaa'},
+  buttonDisabled: {
+    opacity: 1,
+    backgroundColor: '#aaa',
+  },
   caption: {color: '#fff', textAlign: 'center', fontWeight: 'bold'},
   green: {
     backgroundColor: '#28A745',
