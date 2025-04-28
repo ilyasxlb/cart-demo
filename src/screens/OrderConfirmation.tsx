@@ -2,15 +2,9 @@ import {useNavigation} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {observer} from 'mobx-react-lite';
 import React from 'react';
-import {
-  SafeAreaView,
-  SectionList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {SafeAreaView, SectionList, StyleSheet, Text, View} from 'react-native';
 
+import {PrimaryButton} from '@components/atoms/Button.tsx';
 import {FullScreenIndicator} from '@components/atoms/Indicator.tsx';
 import {RootStackParamList} from '@navigation/index';
 import {OPTIONS_LABELS} from '@services/optionsService.ts';
@@ -64,6 +58,10 @@ export const OrderConfirmation: React.FC = observer(() => {
       });
   };
 
+  const handleCancel = () => {
+    navigation.pop();
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       {cartStore.isSubmitting && (
@@ -101,20 +99,17 @@ export const OrderConfirmation: React.FC = observer(() => {
       />
 
       <View style={styles.footer}>
-        <TouchableOpacity
-          style={[
-            styles.button,
-            !cartStore.canCheckout && styles.buttonDisabled,
-          ]}
-          activeOpacity={!cartStore.canCheckout ? 1 : 0.2}
-          onPress={handleConfirm}>
-          <Text style={styles.buttonText}>{'Подтвердить'}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.cancel]}
-          onPress={() => navigation.pop()}>
-          <Text style={styles.buttonText}>{'Отмена'}</Text>
-        </TouchableOpacity>
+        <PrimaryButton
+          disabled={!cartStore.canCheckout}
+          onPress={handleConfirm}
+          caption={'Подтвердить'}
+          color={'blue'}
+        />
+        <PrimaryButton
+          onPress={handleCancel}
+          caption={'Отмена'}
+          color={'red'}
+        />
       </View>
     </SafeAreaView>
   );
@@ -136,28 +131,6 @@ const styles = StyleSheet.create({
   itemPrice: {fontSize: 16, fontWeight: 'bold'},
   container: {padding: 16, paddingTop: 0, paddingBottom: 200},
   heading: {fontSize: 18, fontWeight: 'bold', marginTop: 12},
-  button: {
-    marginTop: 'auto',
-    marginBottom: 22,
-    backgroundColor: '#007AFF',
-    padding: 12,
-    borderRadius: 6,
-  },
-  cancel: {
-    backgroundColor: 'rgba(188,49,40,0.76)',
-    padding: 12,
-    borderRadius: 6,
-    marginBottom: 42,
-  },
-  buttonDisabled: {
-    opacity: 1,
-    backgroundColor: '#aaa',
-  },
-  buttonText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
   footer: {
     position: 'absolute',
     bottom: 0,

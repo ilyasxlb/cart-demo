@@ -3,16 +3,9 @@ import {useNavigation} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {observer} from 'mobx-react-lite';
 import React, {useEffect} from 'react';
-import {
-  FlatList,
-  Platform,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {FlatList, Platform, SafeAreaView, StyleSheet, View} from 'react-native';
 
+import {PrimaryButton} from '@components/atoms/Button.tsx';
 import {FullScreenIndicator} from '@components/atoms/Indicator.tsx';
 import {OptionItem} from '@components/molecules/Option';
 import {ProductCard} from '@components/molecules/ProductCard.tsx';
@@ -118,17 +111,12 @@ export const CartScreen: React.FC = observer(() => {
       </Tab.Navigator>
 
       <View style={styles.footer}>
-        <TouchableOpacity
-          style={[
-            styles.button,
-            !cartStore.canCheckout && styles.buttonDisabled,
-          ]}
-          activeOpacity={!cartStore.canCheckout ? 1 : 0.2}
-          onPress={handleNext}>
-          <Text style={styles.buttonText}>
-            {`Оформить заказ ${cartStore.cartItems.totalPrice} ₽, за ${cartStore.cartItems.totalItems} товаров`}
-          </Text>
-        </TouchableOpacity>
+        <PrimaryButton
+          disabled={!cartStore.canCheckout}
+          caption={`Оформить заказ ${cartStore.cartItems.totalPrice} ₽, за ${cartStore.cartItems.totalItems} товаров`}
+          onPress={handleNext}
+          color={'green'}
+        />
       </View>
     </SafeAreaView>
   );
@@ -147,18 +135,6 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     backgroundColor: '#fff',
   },
-  button: {
-    marginTop: 'auto',
-    marginBottom: 42,
-    backgroundColor: '#28A745',
-    padding: 12,
-    borderRadius: 6,
-  },
-  buttonDisabled: {
-    opacity: 1,
-    backgroundColor: '#aaa',
-  },
-  buttonText: {color: '#fff', textAlign: 'center'},
   tabList: {padding: 16, paddingBottom: 142},
   listItem: {marginBottom: 8, fontSize: 16},
 });

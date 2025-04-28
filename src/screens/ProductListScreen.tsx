@@ -2,15 +2,9 @@ import {useNavigation} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {observer} from 'mobx-react-lite';
 import React, {useEffect} from 'react';
-import {
-  FlatList,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 
+import {PrimaryButton} from '@components/atoms/Button.tsx';
 import {FullScreenIndicator} from '@components/atoms/Indicator.tsx';
 import {ProductCard} from '@components/molecules/ProductCard';
 import {RootStackParamList} from '@navigation/index';
@@ -38,6 +32,10 @@ export const ProductListScreen: React.FC = observer(() => {
     });
   }, [loadProducts]);
 
+  const handleCart = () => {
+    navigation.navigate('Cart');
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       {productStore.loading && (
@@ -57,14 +55,11 @@ export const ProductListScreen: React.FC = observer(() => {
       />
       <View style={styles.footer}>
         <Text style={styles.cartTitle}>{'Ваша корзина:'}</Text>
-        <TouchableOpacity
-          style={styles.cartButton}
-          onPress={() => navigation.navigate('Cart')}>
-          <Text
-            style={
-              styles.cartText
-            }>{`товаров ${cartStore.cartItems.totalItems} шт.`}</Text>
-        </TouchableOpacity>
+        <PrimaryButton
+          onPress={handleCart}
+          caption={`товаров ${cartStore.cartItems.totalItems} шт.`}
+          color={'blue'}
+        />
       </View>
     </SafeAreaView>
   );
@@ -84,15 +79,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loadText: {fontSize: 24, zIndex: 10},
-  cartButton: {
-    marginTop: 'auto',
-    marginBottom: 42,
-    padding: 12,
-    backgroundColor: '#007AFF',
-    borderRadius: 12,
-    elevation: 5,
-    alignItems: 'center',
-  },
   list: {
     flexGrow: 0,
     paddingHorizontal: 8,
@@ -109,7 +95,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     alignSelf: 'center',
   },
-  cartText: {color: '#fff', fontWeight: 'bold'},
   footer: {
     position: 'absolute',
     backgroundColor: '#fff',
