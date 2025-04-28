@@ -30,7 +30,8 @@ export const OrderConfirmation: React.FC = observer(() => {
     {
       title: 'товары:',
       data: cartStore.cartItems.items.map(
-        item => `${item.qty} x ${item.title} = ${item.qty * item.price} ₽`,
+        item =>
+          `${item.quantity} x ${item.title} = ${item.quantity * item.price} ₽`,
       ),
     },
     {

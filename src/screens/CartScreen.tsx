@@ -8,7 +8,7 @@ import {FlatList, Platform, SafeAreaView, StyleSheet, View} from 'react-native';
 import {PrimaryButton} from '@components/atoms/Button.tsx';
 import {FullScreenIndicator} from '@components/atoms/Indicator.tsx';
 import {OptionItem} from '@components/molecules/Option';
-import {ProductCard} from '@components/molecules/ProductCard.tsx';
+import {ProductCard} from '@components/organisms/ProductCard.tsx';
 import {RootStackParamList} from '@navigation/index';
 import {OPTIONS_LABELS} from '@services/optionsService.ts';
 import {analyticsEventsStore} from '@stores/analyticsEventsStore.ts';
@@ -29,16 +29,7 @@ const ProductsTab: React.FC = observer(() => {
       data={cartItems.items}
       keyExtractor={(item, i) => item.id + i}
       contentContainerStyle={styles.tabList}
-      renderItem={({item}) => {
-        return (
-          <ProductCard
-            productData={item}
-            onRemoveFromCart={cartItems.removeLine}
-            onIncrement={cartItems.add}
-            onDecrement={cartItems.remove}
-          />
-        );
-      }}
+      renderItem={({item}) => <ProductCard product={item} />}
     />
   );
 });

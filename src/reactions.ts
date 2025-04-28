@@ -4,11 +4,11 @@ import {AnalyticsPayload} from '@services/analyticsService.ts';
 import {OptionKey} from '@services/optionsService.ts';
 import {analyticsEventsStore} from '@stores/analyticsEventsStore.ts';
 import {cartStore} from '@stores/cartStore';
-import {CartLine} from '@stores/cartStore/itemsStore.ts';
+import {CartItem} from '@stores/cartStore/itemsStore.ts';
 import {toastStore} from '@stores/toastStore.ts';
 
 type CartSnapshotPayload = {
-  items: CartLine[];
+  items: CartItem[];
   options: OptionKey[];
 };
 
@@ -17,7 +17,7 @@ reaction(
   () => ({
     items: cartStore.cartItems.items.map(item => ({
       id: item.id,
-      qty: item.qty,
+      quantity: item.quantity,
       title: item.title,
       price: item.price,
       image: item.image,

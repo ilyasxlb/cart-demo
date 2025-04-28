@@ -8,12 +8,12 @@ import {
   REQUEST_DELAY,
 } from '../constants.ts';
 
-type CartLine = Product & {
-  qty: number;
+type CartItemParam = Product & {
+  quantity: number;
 };
 
 type OrderPayload = {
-  items: CartLine[];
+  items: CartItemParam[];
   options: OptionKey[];
 };
 
@@ -23,7 +23,7 @@ export const submitOrderRequest = ({
 }: OrderPayload): Promise<void> => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      const orderSum = items.reduce((sum, l) => sum + l.price * l.qty, 0);
+      const orderSum = items.reduce((sum, l) => sum + l.price * l.quantity, 0);
       const random = Math.random();
 
       if (random < ORDER_SERVICE_UNAVAILABLE)

@@ -6,7 +6,7 @@ import {FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 
 import {PrimaryButton} from '@components/atoms/Button.tsx';
 import {FullScreenIndicator} from '@components/atoms/Indicator.tsx';
-import {ProductCard} from '@components/molecules/ProductCard';
+import {ProductCard} from '@components/organisms/ProductCard.tsx';
 import {RootStackParamList} from '@navigation/index';
 import {Product} from '@services/productService';
 import {analyticsEventsStore} from '@stores/analyticsEventsStore.ts';
@@ -44,12 +44,7 @@ export const ProductListScreen: React.FC = observer(() => {
       <FlatList
         data={productStore.products}
         style={styles.list}
-        renderItem={({item}) => (
-          <ProductCard
-            productData={item}
-            onAddToCart={cartStore.cartItems.add}
-          />
-        )}
+        renderItem={({item}) => <ProductCard product={item} />}
         keyExtractor={(item: Product) => item.id}
         contentContainerStyle={styles.flatContainer}
       />

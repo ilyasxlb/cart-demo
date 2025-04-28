@@ -2,13 +2,13 @@ import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 type Props = {
-  qty: number;
+  quantity: number;
   onIncrement: () => void;
   onDecrement: () => void;
 };
 
 export const QuantityControl: React.FC<Props> = ({
-  qty,
+  quantity,
   onIncrement,
   onDecrement,
 }) => (
@@ -18,7 +18,7 @@ export const QuantityControl: React.FC<Props> = ({
       style={[styles.btn, styles.decrement]}>
       <Text style={styles.btnText}>−</Text>
     </TouchableOpacity>
-    <Text style={styles.qty}>{qty}</Text>
+    <Text style={styles.qty}>{quantity}</Text>
     <TouchableOpacity
       onPress={onIncrement}
       style={[styles.btn, styles.increment]}>
